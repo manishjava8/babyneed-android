@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.vertechxa.babyneeds.data.DatabaseHandler;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,12 +19,10 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     private AlertDialog.Builder builder;
-
     private AlertDialog dialog;
-
     private Button saveButton;
-
     private EditText babyItem, itemQuantity, itemColor, itemSize;
+    private DatabaseHandler databaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +31,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        databaseHandler = new DatabaseHandler(this);
+
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveItem();
+                saveItem(v);
             }
-
-
         });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 createPopupDialog();
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void saveItem() {
+    private void saveItem(View view) {
     }
 
     private void createPopupDialog() {

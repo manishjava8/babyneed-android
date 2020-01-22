@@ -2,7 +2,9 @@ package com.vertechxa.babyneeds.model;
 
 public class Item {
 
-    private String item, itemColor, dateItemAdded;
+    private String item, itemColor;
+
+    private String dateItemAdded;
 
     private int id, itemQuantity, itemSize;
 

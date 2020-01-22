@@ -12,7 +12,7 @@ public class Constants {
     public static final String KEY_GROCERY_ITEM = "baby_item";
     public static final String KEY_QTY_NUMBER = "quantity_number";
     public static final String KEY_COLOR = "color";
-    public static final String KEY_ITEM_NUMBER = "size";
+    public static final String KEY_ITEM_SIZE = "size";
     public static final String KEY_DATE_NAME = "date_added";
 }
 
