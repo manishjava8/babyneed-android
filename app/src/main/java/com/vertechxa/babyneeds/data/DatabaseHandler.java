@@ -18,15 +18,18 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+    private final Context context;
+
     public DatabaseHandler(Context context) {
         super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+        this.context = context;
     }
 
     // We create our table
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_CONTABLE_TABLE = "CREATE TABLE " + Constants.TABLE_NAME + " ("
+        String CREATE_BABY_TABLE = "CREATE TABLE " + Constants.TABLE_NAME + " ("
                 + Constants.KEY_ID + " INTEGER PRIMARY KEY, "
                 + Constants.KEY_GROCERY_ITEM + " TEXT, "
                 + Constants.KEY_QTY_NUMBER + " INTEGER, "
@@ -34,7 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Constants.KEY_ITEM_SIZE + " INTEGER, "
                 + Constants.KEY_DATE_NAME + " LONG " + ");";
 
-        db.execSQL(CREATE_CONTABLE_TABLE); // creating our table
+        db.execSQL(CREATE_BABY_TABLE); // creating our table
     }
 
     @Override
@@ -58,7 +61,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.KEY_DATE_NAME, java.lang.System.currentTimeMillis());
 
         db.insert(Constants.TABLE_NAME, null, values);
-        db.close();
+
+        Log.d("Main", "Item is added." );
+//        db.close();
     }
 
     // Get all items
@@ -82,6 +87,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 DateFormat dateFormat = DateFormat.getDateInstance();
                 String formattedDate = dateFormat.format(new Date(cursor.getLong(cursor.getColumnIndex(Constants.KEY_DATE_NAME))).getTime());
                 item.setDateItemAdded(formattedDate);
+
+                items.add(item);
             } while (cursor.moveToNext());
         }
         return items;
