@@ -74,15 +74,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(rawQuery, null);
+        Cursor cursor = db.query(Constants.TABLE_NAME, new String[] {Constants.KEY_ID,
+                Constants.KEY_GROCERY_ITEM,
+                Constants.KEY_QTY_NUMBER, Constants.KEY_COLOR, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
+                null,null, null, null,Constants.KEY_DATE_NAME + " DESC");
         if (cursor.moveToFirst()) {
             do {
                 Item item = new Item();
-                item.setId(cursor.getInt(0));
-                item.setItem(cursor.getString(1));
-                item.setItemQuantity(cursor.getInt(2));
-                item.setItemColor(cursor.getString(3));
-                item.setItemSize(cursor.getInt(4));
+                item.setId(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ID)));
+                item.setItem(cursor.getString(cursor.getColumnIndex(Constants.KEY_GROCERY_ITEM)));
+                item.setItemQuantity(cursor.getInt(cursor.getColumnIndex(Constants.KEY_QTY_NUMBER)));
+                item.setItemColor(cursor.getString(cursor.getColumnIndex(Constants.KEY_COLOR)));
+                item.setItemSize(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ITEM_SIZE)));
 
                 DateFormat dateFormat = DateFormat.getDateInstance();
                 String formattedDate = dateFormat.format(new Date(cursor.getLong(cursor.getColumnIndex(Constants.KEY_DATE_NAME))).getTime());
@@ -98,8 +101,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(Constants.TABLE_NAME, new String[]{
-                        Constants.KEY_ID, Constants.KEY_GROCERY_ITEM, Constants.KEY_QTY_NUMBER,
-                        Constants.KEY_COLOR, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
+                        Constants.KEY_ID,
+                        Constants.KEY_GROCERY_ITEM,
+                        Constants.KEY_QTY_NUMBER,
+                        Constants.KEY_COLOR,
+                        Constants.KEY_ITEM_SIZE,
+                        Constants.KEY_DATE_NAME},
                 Constants.KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null);
 
@@ -122,10 +129,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // Delete Single Item
-    public void deleteContact(Item item) {
+    public void deleteItem(int itemId) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(Constants.TABLE_NAME, Constants.KEY_ID + "=?", new String[]{String.valueOf(item.getId())});
+        db.delete(Constants.TABLE_NAME, Constants.KEY_ID + "=?", new String[]{String.valueOf(itemId)});
         db.close();
     }
 
