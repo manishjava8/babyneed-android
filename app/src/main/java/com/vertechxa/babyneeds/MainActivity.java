@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         Snackbar.make(view, "Item Saved.", Snackbar.LENGTH_SHORT).show();
 
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

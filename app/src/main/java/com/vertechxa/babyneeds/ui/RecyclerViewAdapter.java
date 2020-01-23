@@ -2,16 +2,21 @@ package com.vertechxa.babyneeds.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.vertechxa.babyneeds.ListActivity;
+import com.vertechxa.babyneeds.MainActivity;
 import com.vertechxa.babyneeds.R;
 import com.vertechxa.babyneeds.data.DatabaseHandler;
 import com.vertechxa.babyneeds.model.Item;
@@ -86,19 +91,68 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v) {
 
-            int position;
+            int position = getAdapterPosition();
+            Item item = itemList.get(position);
             switch (v.getId()) {
                 case R.id.editButton:
                     // edit item
+                    editItem(item);
                     break;
                 case R.id.deleteButton:
-
-                    // delete item
-                    position = getAdapterPosition();
-                    Item item = itemList.get(position);
                     deleteItem(item.getId());
                     break;
             }
+        }
+
+        private void editItem(final Item newItem) {
+
+            final EditText babyItem, itemQuantity, itemColor, itemSize;
+            TextView title;
+            Button saveButton;
+
+            builder = new AlertDialog.Builder(context);
+            View view = LayoutInflater.from(context).inflate(R.layout.popup, null);
+
+            babyItem = view.findViewById(R.id.babyItem);
+            itemQuantity = view.findViewById(R.id.itemQuantity);
+            itemColor = view.findViewById(R.id.itemColor);
+            itemSize = view.findViewById(R.id.itemSize);
+            saveButton = view.findViewById(R.id.saveButton);
+            title = view.findViewById(R.id.title);
+
+            saveButton.setText("Update");
+            title.setText("Edit Item");
+
+            babyItem.setText(newItem.getItem());
+            itemQuantity.setText(String.valueOf(newItem.getItemQuantity()));
+            itemColor.setText(newItem.getItemColor());
+            itemSize.setText(String.valueOf(newItem.getItemSize()));
+
+            builder.setView(view);
+            dialog = builder.create();
+            dialog.show();
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseHandler db = new DatabaseHandler(context);
+                    newItem.setItem(String.valueOf(babyItem.getText()));
+                    newItem.setItemQuantity(Integer.parseInt(itemQuantity.getText().toString()));
+                    newItem.setItemSize(Integer.parseInt(itemSize.getText().toString()));
+                    newItem.setItemColor(String.valueOf(itemColor.getText()));
+
+                    if(!babyItem.getText().toString().isEmpty()
+                            && !itemQuantity.getText().toString().isEmpty()
+                            && !itemSize.getText().toString().isEmpty()
+                            && !itemColor.getText().toString().isEmpty()) {
+                        db.updateItem(newItem);
+                        notifyItemChanged(getAdapterPosition(), newItem);
+                    } else {
+                        Snackbar.make(v, "Fields Empty", Snackbar.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                }
+            });
         }
 
         private void deleteItem(final int id) {
@@ -120,8 +174,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     db.deleteItem(id);
                     itemList.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
-
                     dialog.dismiss();
+
+//                    if (itemList.size() == 0) {
+//                        context.startActivity(new Intent(v.getContext(), MainActivity.class));
+//                    }
                 }
             });
 
